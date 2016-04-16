@@ -44,33 +44,33 @@ function httpsTplReplace(content) {
     content = content.replace(/(?:src|img)="\{%(\$.*?)%\}"/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
-            console.log('==> replacement 1::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('😛 ==> replacement 1::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
 
     content = content.replace(/(src|img)="(http:\/\/[\.\w\/\-]+)\{%(\$.*?)%\}([\.\w\/\-]+)"/gi, function(word, s1, s2, s3, s4){
         var ret = s1 + '=\"{%\'' + s2  + '\'|cat:' + s3 + '|cat:\'' + s4 + '\'|https_trans%}\"';
-        console.log('==> replacement 2::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('🙋 ==> replacement 2::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     });
 
     content = content.replace(/(src|img)="<#=(.*?)#>"/gi, function(word, s1, s2){
         var ret = s1 + '="<#-__2ssl__(' + s2 + ')#>"';
-        console.log('==> replacement 3::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('👑 ==> replacement 3::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     });
 
     content = content.replace(/(src|img)="\${([^%]+?)}"/gi, function(word, s1, s2){
         var ret = s1 + '="${__2ssl__(' + s2 + ')}"';
-        console.log('==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('✨ ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     });
 
     content = content.replace(/\{%.*?(\$(.+?)\|json_encode).*?%\}/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
-            console.log('==> replacement 4::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('😇 ==> replacement 4::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
@@ -78,7 +78,7 @@ function httpsTplReplace(content) {
     content = content.replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\(['"]?\{%(\$.*?)%\}['"]?\)/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
-            console.log('==> replacement 5::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('😚 ==> replacement 5::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
@@ -91,7 +91,7 @@ function httpsCssReplace(content) {
     return content.replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\((http:\/\/[\w\.\-]+).*?\)/gi, function(word, key){
         var ret = httpsTransMap[key] ? word.replace(key, httpsTransMap[key]) : word;
         if( ret !== word) {
-            console.log('==> replacement 6::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('😉 ==> replacement 6::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
@@ -107,7 +107,7 @@ function httpsJSReplace(content) {
         });
         if(ret !== match){
             word = word.replace(match, ret);
-            console.log('==> replacement 7::' + '[' + origin + ']' + ' => [' + word + ']');
+            console.log('😃 ==> replacement 7::' + '[' + origin + ']' + ' => [' + word + ']');
         }
         return word;
     });

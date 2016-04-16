@@ -1,0 +1,27 @@
+{
+    "name": "fis-prepackager-iknow-https-trans",
+        "version": "0.0.3",
+        "description": "This plugin is to translate http url to https for ik.",
+        "main": "index.js",
+
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/jinzhan/fis-prepackager-iknow-https-trans.git"
+        },
+
+        "scripts": {
+            "test": "echo \"Error: no test specified\" && exit 1"
+        },
+        "keywords": [
+            "iknow-https-trans"
+            ],
+        "author": {
+            "name": "jinzhan"
+        },
+        "license": "ISC",
+        "_id": "fis-prepackager-iknow-https-trans@0.0.3",
+        "_shasum": "75922e1762f39717f349bfef65139f0060c89f80",
+        "_from": "fis-prepackager-iknow-https-trans@latest",
+        "readme": "fis-prepackager-iknow-https-trans\r\n==========================\r\n\r\nThis plugin is to translate http url to https for ik.\r\n\r\n\r\n\r\n> 安装\r\n\r\n```javascript\r\n    npm install -g fis-prepackager-iknow-https-trans\r\n```\r\n\r\n> fis-conf.js中配置\r\n\r\n```javascript\r\n    fis.config.set('modules.prepackager', 'widget-inline,iknow-https-trans');\r\n```",
+        "readmeFilename": "README.md"
+}
