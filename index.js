@@ -19,6 +19,7 @@ var httpsTransMap = {
     "http:\/\/f.hiphotos.baidu.com":"https:\/\/gss0.baidu.com\/-vo3dSag_xI4khGko9WTAnF6hhy",
     "http:\/\/g.hiphotos.baidu.com":"https:\/\/gss0.baidu.com\/-fo3dSag_xI4khGko9WTAnF6hhy",
     "http:\/\/h.hiphotos.baidu.com":"https:\/\/gss0.baidu.com\/7Po3dSag_xI4khGko9WTAnF6hhy",
+    "http:\/\/priv.hiphotos.baidu.com":"https:\/\/gss0.baidu.com\/7Po3dSag_xI4khGko9WTAnF6hhy",
     "http:\/\/himg.bdimg.com":"https:\/\/gss0.bdstatic.com\/7Ls0a8Sm1A5BphGlnYG",
     "http:\/\/imgsrc.baidu.com":"https:\/\/gss0.baidu.com\/70cFfyinKgQFm2e88IuM_a",
     "http:\/\/iknowwap.bdimg.com":"https:\/\/gss0.bdstatic.com\/7051cy7z2RZ3otebn9fN2DJv",
@@ -41,49 +42,78 @@ var httpsTransMap = {
 
 // 对tpl的处理
 function httpsTplReplace(content) {
-    content = content.replace(/(?:src|img)="\{%(\$.*?)%\}"/gi, function(word, key){
+    // 替换可能包含在smarty变量中的url
+    return content.replace(/(?:src|img)="\{%(\$.*?)%\}"/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
             console.log('😛 ==> replacement 1::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
-    });
+    })
 
-    content = content.replace(/(src|img)="(http:\/\/[\.\w\/\-]+)\{%(\$.*?)%\}([\.\w\/\-]+)"/gi, function(word, s1, s2, s3, s4){
+    // 替换smarty和字符的combination
+    .replace(/(src|img)="(http:\/\/[\.\w\/\-]+)\{%(\$.*?)%\}([\.\w\/\-]+)"/gi, function(word, s1, s2, s3, s4){
         var ret = s1 + '=\"{%\'' + s2  + '\'|cat:' + s3 + '|cat:\'' + s4 + '\'|https_trans%}\"';
         console.log('🙋 ==> replacement 2::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
-    });
+    })
 
-    content = content.replace(/(src|img)="<#=(.*?)#>"/gi, function(word, s1, s2){
+    // 替换直接的图片地址
+    .replace(/src="([^'"{}<>]+)"/gi, function(word, s){
+        var key = s.split('.com')[0] + '.com';
+        if(httpsTransMap[key]){
+            var ret = '{%"' + s + '"|https_trans%}';
+            console.log('💖 ==> replacement Z::' + '[' + word + ']' + ' => [' + ret + ']');
+            return word.replace(s, ret);
+        }
+        return word;
+    })
+
+    // 替换纯baiduTemplate
+    .replace(/(src|img)="<#=(.*?)#>"/gi, function(word, s1, s2){
         var ret = s1 + '="<#-__2ssl__(' + s2 + ')#>"';
         console.log('👑 ==> replacement 3::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
-    });
+    })
 
-    content = content.replace(/(src|img)="\${([^%]+?)}"/gi, function(word, s1, s2){
+    // 替换baiduTemplate和字符串的组合
+    .replace(/(src|img)="([^'"]+)<#:?=(.*?)#>([^'"]+)"/gi, function(word, s1, s2, s3, s4){
+        var ret = s1 + '="<#-__2ssl__(\'' + s2.replace(/\//g, '\\/') + '\' + ' + s3 + ' + \'' + s4.replace(/\//g, '\\/') + '\')#>"';
+        console.log('💋 ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
+        return ret;
+    })
+
+    // 替换juicer模板
+    .replace(/(src|img)="\${([^%]+?)}"/gi, function(word, s1, s2){
         var ret = s1 + '="${__2ssl__(' + s2 + ')}"';
         console.log('✨ ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
-    });
+    })
 
-    content = content.replace(/\{%.*?(\$(.+?)\|json_encode).*?%\}/gi, function(word, key){
+    // 替换juicer模板和字符串的组合
+    .replace(/(src|img)="([^'"]+)\${([^%]+?)}([^'"]+)"/gi, function(word, s1, s2, s3, s4){
+        var ret = s1 + '="${__2ssl__(\'' + s2 + '\' + ' + s3 + ' + \'' + s4 + '\')}"';
+        console.log('👯 ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
+        return ret;
+    })
+
+    // 替换json_encode的字符串
+    .replace(/\{%.*?(\$(.+?)\|json_encode).*?%\}/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
             console.log('😇 ==> replacement 4::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
-    });
+    })
 
-    content = content.replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\(['"]?\{%(\$.*?)%\}['"]?\)/gi, function(word, key){
+    // 替换模板中包含在background中的smarty的变量
+    .replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\(['"]?\{%(\$.*?)%\}['"]?\)/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
             console.log('😚 ==> replacement 5::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
-
-    return content;
 };
 
 
