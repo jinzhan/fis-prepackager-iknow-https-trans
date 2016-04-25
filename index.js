@@ -39,14 +39,13 @@ var httpsTransMap = {
     "http:\/\/cp01-testing-iknow-real04.cp01.baidu.com:8099":"https:\/\/zdtest.baidu.com"
 };
 
-
 // 对tpl的处理
 function httpsTplReplace(content) {
     // 替换可能包含在smarty变量中的url
     return content.replace(/(?:src|img)="\{%(\$.*?)%\}"/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
-            console.log('😛 ==> replacement 1::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('🙆 ==> replacement 1::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     })
@@ -63,7 +62,7 @@ function httpsTplReplace(content) {
         var key = s.split('.com')[0] + '.com';
         if(httpsTransMap[key]){
             var ret = '{%"' + s + '"|https_trans%}';
-            console.log('💖 ==> replacement Z::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('👭 ==> replacement 3::' + '[' + word + ']' + ' => [' + ret + ']');
             return word.replace(s, ret);
         }
         return word;
@@ -72,28 +71,28 @@ function httpsTplReplace(content) {
     // 替换纯baiduTemplate
     .replace(/(src|img)="<#=(.*?)#>"/gi, function(word, s1, s2){
         var ret = s1 + '="<#-__2ssl__(' + s2 + ')#>"';
-        console.log('👑 ==> replacement 3::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('👑 ==> replacement 4::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     })
 
     // 替换baiduTemplate和字符串的组合
     .replace(/(src|img)="([^'"]+)<#:?=(.*?)#>([^'"]+)"/gi, function(word, s1, s2, s3, s4){
         var ret = s1 + '="<#-__2ssl__(\'' + s2.replace(/\//g, '\\/') + '\' + ' + s3 + ' + \'' + s4.replace(/\//g, '\\/') + '\')#>"';
-        console.log('💋 ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('💏 ==> replacement 5::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     })
 
     // 替换juicer模板
     .replace(/(src|img)="\${([^%]+?)}"/gi, function(word, s1, s2){
         var ret = s1 + '="${__2ssl__(' + s2 + ')}"';
-        console.log('✨ ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('👪 ==> replacement 6::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     })
 
     // 替换juicer模板和字符串的组合
     .replace(/(src|img)="([^'"]+)\${([^%]+?)}([^'"]+)"/gi, function(word, s1, s2, s3, s4){
         var ret = s1 + '="${__2ssl__(\'' + s2 + '\' + ' + s3 + ' + \'' + s4 + '\')}"';
-        console.log('👯 ==> replacement 3.1::' + '[' + word + ']' + ' => [' + ret + ']');
+        console.log('👯 ==> replacement 7::' + '[' + word + ']' + ' => [' + ret + ']');
         return ret;
     })
 
@@ -101,7 +100,7 @@ function httpsTplReplace(content) {
     .replace(/\{%.*?(\$(.+?)\|json_encode).*?%\}/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
-            console.log('😇 ==> replacement 4::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('💃 ==> replacement 8::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     })
@@ -110,7 +109,7 @@ function httpsTplReplace(content) {
     .replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\(['"]?\{%(\$.*?)%\}['"]?\)/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
         if( ret !== word) {
-            console.log('😚 ==> replacement 5::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('🏃 ==> replacement 9::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
@@ -121,7 +120,7 @@ function httpsCssReplace(content) {
     return content.replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\((http:\/\/[\w\.\-]+).*?\)/gi, function(word, key){
         var ret = httpsTransMap[key] ? word.replace(key, httpsTransMap[key]) : word;
         if( ret !== word) {
-            console.log('😉 ==> replacement 6::' + '[' + word + ']' + ' => [' + ret + ']');
+            console.log('💖 ==> replacement 10::' + '[' + word + ']' + ' => [' + ret + ']');
         }
         return ret;
     });
@@ -137,7 +136,7 @@ function httpsJSReplace(content) {
         });
         if(ret !== match){
             word = word.replace(match, ret);
-            console.log('😃 ==> replacement 7::' + '[' + origin + ']' + ' => [' + word + ']');
+            console.log('💋 ==> replacement 11::' + '[' + origin + ']' + ' => [' + word + ']');
         }
         return word;
     });
@@ -169,7 +168,7 @@ var exports = module.exports = function(ret, conf, settings, opt) {
                 break;
             }
             if(content !== origin) {
-                console.log('[LOG] Replacements work is completed in [ ' + file.id + ' ]');
+                console.log('✨✨✨[LOG] Replacements completed in [ ' + file.id + ' ]✨✨✨');
             }
             file.setContent(content);
         }
