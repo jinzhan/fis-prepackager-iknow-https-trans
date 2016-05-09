@@ -96,6 +96,15 @@ function httpsTplReplace(content) {
         return ret;
     })
 
+     // 替换juicer模板中包含在background中的变量
+    .replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\(['"]?\$\{(.*?)\}['"]?\)/gi, function(word, key){
+        var ret = word.replace(key, '__2ssl__(' + key + ')');
+        if( ret !== word) {
+            console.log('🙇 ==> replacement 11::' + '[' + word + ']' + ' => [' + ret + ']');
+        }
+        return ret;
+    })
+
     // 替换json_encode的字符串
     .replace(/\{%.*?(\$(.+?)\|json_encode).*?%\}/gi, function(word, key){
         var ret = word.replace(key, key + '|https_trans');
