@@ -82,6 +82,15 @@ function httpsTplReplace(content) {
         return ret;
     })
 
+    // 替换baiduTemplate模板中包含在background中的变量
+    .replace(/background(?:\-image)?:\s*(?:#(?:[A-Za-z0-9]{3}|[A-Za-z0-9]{6})\s+)?url\(['"]?<#:?=(.*?)#>['"]?\)/gi, function(word, key){
+        var ret = word.replace(key, '__2ssl__(' + key + ')');
+        if( ret !== word) {
+            console.log('👀 ==> replacement 12::' + '[' + word + ']' + ' => [' + ret + ']');
+        }
+        return ret;
+    })
+
     // 替换juicer模板
     .replace(/(src|img)="\${([^%]+?)}"/gi, function(word, s1, s2){
         var ret = s1 + '="${__2ssl__(' + s2 + ')}"';
