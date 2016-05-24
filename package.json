@@ -1,6 +1,6 @@
 {
     "name": "fis-prepackager-iknow-https-trans",
-        "version": "0.0.5",
+        "version": "0.0.6",
         "description": "This plugin is to translate http url to https for ik.",
         "main": "index.js",
 
